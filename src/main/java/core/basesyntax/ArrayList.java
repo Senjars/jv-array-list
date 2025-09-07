@@ -61,6 +61,7 @@ public class ArrayList<T> implements List<T> {
         if (index < 0 || index >= size) {
             throw new ArrayListIndexOutOfBoundsException("Index out of bounds");
         }
+        //remove(int index)
         T removed = (T) elements[index];
         for (int i = index; i < size - 1; i++) {
             elements[i] = elements[i + 1];
@@ -68,14 +69,14 @@ public class ArrayList<T> implements List<T> {
         elements[size - 1] = null;
         size--;
         return removed;
-    }
 
+    }
 
     @Override
     public T remove(T element) {
         for (int i = 0; i < size; i++) {
             if (elements[i].equals(element)) {
-                T removed = (T) elements[i];
+                final T removed = (T) elements[i];
                 for (int j = i; j < size - 1; j++) {
                     elements[j] = elements[j + 1];
                 }
@@ -86,7 +87,6 @@ public class ArrayList<T> implements List<T> {
         }
         return null;
     }
-
 
     @Override
     public int size() {
