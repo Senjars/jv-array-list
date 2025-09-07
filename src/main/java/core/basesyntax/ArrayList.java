@@ -95,6 +95,7 @@ public class ArrayList<T> implements List<T> {
     public boolean isEmpty() {
         return size == 0;
     }
+
     private void ensureCapacity() {
         if (size == elements.length) {
             int newCapacity = elements.length * 3 / 2;
