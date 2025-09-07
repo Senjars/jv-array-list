@@ -70,6 +70,7 @@ public class ArrayList<T> implements List<T> {
         return removed;
     }
 
+
     @Override
     public T remove(T element) {
         for (int i = 0; i < size; i++) {
@@ -85,6 +86,7 @@ public class ArrayList<T> implements List<T> {
         }
         return null;
     }
+
 
     @Override
     public int size() {
