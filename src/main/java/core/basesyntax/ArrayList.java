@@ -67,7 +67,7 @@ public class ArrayList<T> implements List<T> {
     @Override
     public T remove(T element) {
         for (int i = 0; i < size; i++) {
-            if (Objects.equals(elements[i], element)) { // bezpieczne porównanie
+            if (Objects.equals(elements[i], element)) {
                 @SuppressWarnings("unchecked")
                 final T removed = (T) elements[i];
 
@@ -76,7 +76,7 @@ public class ArrayList<T> implements List<T> {
                     System.arraycopy(elements, i + 1, elements, i, numMoved);
                 }
 
-                elements[--size] = null; // zwolnij ostatni slot
+                elements[--size] = null;
                 return removed;
             }
         }
@@ -103,7 +103,7 @@ public class ArrayList<T> implements List<T> {
     private void growIfArrayFull(int minCapacity) {
         if (minCapacity > elements.length) {
             int oldCapacity = elements.length;
-            int newCapacity = oldCapacity + (oldCapacity >> 1); // 1.5x
+            int newCapacity = oldCapacity + (oldCapacity >> 1);
             if (newCapacity < minCapacity) {
                 newCapacity = minCapacity;
             }
