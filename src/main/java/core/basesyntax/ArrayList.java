@@ -1,5 +1,8 @@
 package core.basesyntax;
 
+import java.util.NoSuchElementException;
+import java.util.Objects;
+
 public class ArrayList<T> implements List<T> {
     private static final double GROWTH_FACTOR = 1.5;
     private static final int DEFAULT_SIZE = 10;
@@ -8,7 +11,7 @@ public class ArrayList<T> implements List<T> {
 
     @Override
     public void add(T value) {
-        growIfArrayFull();
+        growIfArrayFull(size + 1);
         elements[size++] = value;
     }
 
@@ -18,7 +21,7 @@ public class ArrayList<T> implements List<T> {
             throw new ArrayListIndexOutOfBoundsException("Index: " + index + ", Size: " + size);
         }
 
-        growIfArrayFull();
+        growIfArrayFull(size + 1);
         System.arraycopy(elements, index, elements, index + 1, size - index);
         elements[index] = value;
         size++;
@@ -27,12 +30,10 @@ public class ArrayList<T> implements List<T> {
     @Override
     public void addAll(List<T> list) {
         Object[] toCopy = list.toArray();
-
-        int newSize = toCopy.length;
-        growIfArrayFull();
-
-        System.arraycopy(toCopy, 0, elements, size, newSize );
-        size += newSize;
+        int numNew = toCopy.length;
+        growIfArrayFull(size + numNew);
+        System.arraycopy(toCopy, 0, elements, size, numNew);
+        size += numNew;
     }
 
     @Override
@@ -66,14 +67,20 @@ public class ArrayList<T> implements List<T> {
     @Override
     public T remove(T element) {
         for (int i = 0; i < size; i++) {
-            if (elements[i].equals(element)) {
+            if (Objects.equals(elements[i], element)) { // bezpieczne porównanie
+                @SuppressWarnings("unchecked")
                 final T removed = (T) elements[i];
-                System.arraycopy(elements, i + 1, elements, i, elements.length - i - 1);
-                elements[--size] = null;
+
+                int numMoved = size - i - 1;
+                if (numMoved > 0) {
+                    System.arraycopy(elements, i + 1, elements, i, numMoved);
+                }
+
+                elements[--size] = null; // zwolnij ostatni slot
                 return removed;
             }
         }
-        return null;
+        throw new NoSuchElementException("Value not existent: " + element);
     }
 
     @Override
@@ -93,13 +100,15 @@ public class ArrayList<T> implements List<T> {
         return result;
     }
 
-    private void growIfArrayFull() {
-        if (size == elements.length) {
-            int newCapacity = (int) (elements.length * GROWTH_FACTOR);
-            Object[] newElements = new Object[newCapacity];
-            for (int i = 0; i < size; i++) {
-                newElements[i] = elements[i];
+    private void growIfArrayFull(int minCapacity) {
+        if (minCapacity > elements.length) {
+            int oldCapacity = elements.length;
+            int newCapacity = oldCapacity + (oldCapacity >> 1); // 1.5x
+            if (newCapacity < minCapacity) {
+                newCapacity = minCapacity;
             }
+            Object[] newElements = new Object[newCapacity];
+            System.arraycopy(elements, 0, newElements, 0, size);
             elements = newElements;
         }
     }
